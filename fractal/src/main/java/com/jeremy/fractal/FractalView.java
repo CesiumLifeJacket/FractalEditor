@@ -1,8 +1,6 @@
 package com.jeremy.fractal;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,8 +8,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
-import java.util.logging.Handler;
 
 
 /**
@@ -23,9 +19,10 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder sh;
     private Context ctx = null;
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private FractalThread fthread;
+    private Thread drawThread;
 
-    public Fractal fractal;
+    // TODO: make sure this is thread-safe to write from main and read in draw
+    private Fractal fractal;
 
     public FractalView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -36,30 +33,29 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
         paint.setStyle(Paint.Style.FILL);
     }
 
+    public Fractal getFractal() {return fractal;}
+
+    public void setFractal(Fractal f) {
+        fractal = f;
+
+        // redraw fractal
+        drawThread.start(); // TODO: find out what happens when start() is called before a thread finishes.
+    }
+
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        // make fractal a sierpinski gasket
+        // Make a nifty leaf fractal
         fractal = new Fractal();
-        Mat2 scale_half = new Mat2(0.5f, 0, 0, 0.7f);
-        Mat2 right_trans  = new Mat2(0.4f, -0.2f, 0.2f, 0.4f);
-        Mat2 left_trans   = new Mat2(0.4f, 0.2f, -0.2f, 0.4f);
-        Mat2 bottom_trans = new Mat2(0.25f, 0, 0, -0.3f);
-        fractal.tforms.add(new Transformation(new Vec2(300,  165), scale_half, Color.RED, 0.3f));
-        fractal.tforms.add(new Transformation(new Vec2(100, 700), left_trans, Color.YELLOW, 0.3f));
-        fractal.tforms.add(new Transformation(new Vec2(500, 700), right_trans, Color.CYAN, 0.3f));
-        fractal.tforms.add(new Transformation(new Vec2(300, 665), bottom_trans, Color.GREEN, 0.3f));
+        Mat2 scale_half = new Mat2(0.5f, 0, 0, 0.5f);
+        fractal.tforms.add(new Transformation(new Vec2(325,  165), scale_half, Color.RED, 0.3f));
+        fractal.tforms.add(new Transformation(new Vec2(50, 700), scale_half, Color.GREEN, 0.3f));
+        fractal.tforms.add(new Transformation(new Vec2(600, 700), scale_half, Color.BLUE, 0.3f));
 
-        // paint the fractal to the screen
-        /*
-        Canvas canvas = sh.lockCanvas();
-        onDraw(canvas);
-        sh.unlockCanvasAndPost(canvas);
-        */
+        // initialize fractal drawing thread
+        drawThread = new Thread(new FractalDrawer());
 
-        // start up the draw thread
-        fthread = new FractalThread();
-        fthread.setRunning(true);
-        fthread.start();
+        // draw fractal in new thread
+        drawThread.start();
     }
 
     @Override
@@ -68,16 +64,20 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-        fthread.setRunning(false);
         boolean retry = true;
         while(retry) {
             try {
-                fthread.join();
+                drawThread.join();
                 retry = false;
             } catch (Exception e) {
                 Log.v("Error ending thread", e.getMessage());
             }
         }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+
     }
 
     // function to draw the fractal to the screen instead of onDraw
@@ -97,45 +97,15 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(Color.WHITE);
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        // TODO: ditch this function when the threading is working
-        /*
-        // draw the fractal to the canvas
-        canvas.drawColor(Color.BLACK);
-
-
-        Vert[] verts = fractal.point_fractal(7);
-        for (int i=0; i < verts.length; i++) {
-            paint.setColor(verts[i].col);
-            canvas.drawPoint(verts[i].pos.x, verts[i].pos.y, paint);
-        }
-
-        //fractal.draw_point_fractal(4, canvas); // should make more efficient
-        paint.setColor(Color.WHITE);
-        */
-    }
-
-    private class FractalThread extends Thread {
-        boolean running;
-        Canvas canvas;
-        public FractalThread() {
-            running = false;
-        }
-        void setRunning(boolean r) {
-            running = r;
-        }
-
+    private class FractalDrawer implements Runnable {
         @Override
         public void run() {
-            super.run();
-            while(running) {
-                canvas = sh.lockCanvas();
-                if (canvas != null) {
-                    doDraw(canvas);
-                    sh.unlockCanvasAndPost(canvas);
-                }
+            Canvas canvas = sh.lockCanvas();
+            if (canvas != null) {
+                doDraw(canvas);
+                sh.unlockCanvasAndPost(canvas);
             }
         }
     }
+
 }

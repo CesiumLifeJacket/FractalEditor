@@ -105,13 +105,6 @@ public class Fractal {
         return rec_verts;
     }
 
-    /**
-     * this approach is memory efficient, but not easily converted to paralell
-     * @param vert
-     * @param level
-     * @param canvas
-     */
-
     public Vert[] point_fractal(int n_levels) {
         if (tforms.size() == 0) return null;
         Vert[] verts = {new Vert(tforms.get(0).origin)};
