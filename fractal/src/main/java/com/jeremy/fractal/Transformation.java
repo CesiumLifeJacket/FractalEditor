@@ -37,6 +37,12 @@ public class Transformation {
         this.color = color;
         this.color_weight = color_weight;
     }
+    public Transformation(Transformation t) {
+        this.origin = new Vec2(t.origin);
+        this.t_matrix = new Mat2(t.t_matrix);
+        this.color = t.color;
+        this.color_weight = t.color_weight;
+    }
 
     public Vert transform(Vert v) {
         Vert new_v = new Vert();

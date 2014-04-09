@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: jeval">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/fractal/libs/jeval.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

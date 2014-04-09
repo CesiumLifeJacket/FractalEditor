@@ -14,6 +14,11 @@ public class Fractal {
     public Fractal() {
         tforms = new ArrayList<Transformation>();
     }
+    public Fractal(Fractal f) {
+        tforms = new ArrayList<Transformation>();
+        for(int i=0; i < f.tforms.size(); i++)
+            tforms.add(new Transformation(f.tforms.get(i)));
+    }
 
     /**
      * determines a triangulization of the convex hull encompassing the transformation origins

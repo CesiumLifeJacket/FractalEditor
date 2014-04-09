@@ -7,8 +7,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/fractal" />
+            <option value="C:\Users\JeremyIV\AndroidStudioProjects\FractalEditor0.1" />
+            <option value="C:\Users\JeremyIV\AndroidStudioProjects\FractalEditor0.1\fractal" />
           </set>
         </option>
       </GradleProjectSettings>

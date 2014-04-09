@@ -14,6 +14,11 @@ public class Vec2 {
         this.x = x;
         this.y = y;
     }
+    public Vec2(Vec2 v) {
+        x = v.x;
+        y = v.y;
+    }
+
     public Vec2 plus(Vec2 v) {
         return new Vec2(x+v.x, y+v.y);
     }

@@ -18,6 +18,11 @@ public class Mat2 {
         this.x1 = x1; this.y1 = y1;
         this.x2 = x2; this.y2 = y2;
     }
+    public Mat2(Mat2 m) {
+        x1 = m.x1; y1 = m.y1;
+        x2 = m.x2; y2 = m.y2;
+    }
+
     public Mat2 times(float c) {
         return new Mat2(
             x1*c, y1*c,
