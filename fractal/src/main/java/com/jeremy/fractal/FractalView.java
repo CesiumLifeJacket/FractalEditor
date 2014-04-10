@@ -60,7 +60,7 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
             return;
         }
         // redraw fractal
-        drawThread.start(); // TODO: find out what happens when start() is called before a thread finishes.
+        drawThread.start();
     }
 
     /**
