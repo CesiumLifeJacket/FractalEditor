@@ -1,12 +1,16 @@
-package com.jeremy.fractal; /**
- * Created by JeremyIV on 4/2/14.
- */
+package com.jeremy.fractal;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Fractal defined by a set of transformations.
+ * Contains methods to draw the fractal or retrieve a set of points defining it.
+ */
 public class Fractal {
     // transformations that define the fractal
     ArrayList<Transformation> tforms;
@@ -21,15 +25,14 @@ public class Fractal {
     }
 
     /**
-     * determines a triangulization of the convex hull encompassing the transformation origins
-     * @return
+     * Determines a triangulation of the convex hull encompassing the transformation origins.
+     * @return  an array of Verts defining a clockwise wind-order triangulation of the convex hull.
      */
     private Vert[] convexHull() {
         Vec2[] vecs = new Vec2[tforms.size()];
         for (int i = 0; i < tforms.size(); i++) {
             vecs[i] = tforms.get(i).origin;
         }
-        if (vecs == null) return null;
         // triangle or fewer has all points on hull
         if (vecs.length <= 3) {
             Vert[] verts = new Vert[vecs.length];
@@ -37,8 +40,7 @@ public class Fractal {
                 verts[i] = new Vert(vecs[i]); // TODO: account for color
             return verts;
         }
-        List<Vec2> points = new ArrayList<Vec2>();
-        for (int i = 0; i < vecs.length; i++) points.add(vecs[i]);
+        List<Vec2> points = new ArrayList<Vec2>(Arrays.asList(vecs));
 
         List<Vec2> hull = new ArrayList<Vec2>(); // list of points on the hull, in order
 
@@ -90,18 +92,27 @@ public class Fractal {
 
         return hull_triangles;
     }
+
     /**
-     * generates a fractal from initial verts <code>verts</code> with <code>n_levels</code> of
-     * recursion
-     * This approach is easily parallelizable, but memory inefficient
+     * Generates and returns fractal verts using supplied Verts as the base.
      *
-     * returns an com.jeremy.fractal.Vert array of verts in the generated fractal.
+     * @param verts  base vertices to recursively transform into a fractal
+     * @param n_levels  number of levels of recursion in the fractal
+     * @return  array of Verts in the fractal
      */
     private Vert[] recurse_verts(Vert[] verts, int n_levels) {
         Vert[] rec_verts = verts;
+
+        // for n levels of recursion
         while(n_levels-->0) {
+
+            // allocate memory for the next level of recursion
             Vert[] n_rec_verts = new Vert[rec_verts.length*tforms.size()];
+
+            // for each transformation
             for (int i = 0; i < tforms.size(); i++)
+
+                // add a duplicate of the previous level Verts transformed by this transformation
                 for (int j = 0; j < rec_verts.length; j++)
                     n_rec_verts[i*rec_verts.length+j] = tforms.get(i).transform(rec_verts[j]);
 
@@ -110,11 +121,26 @@ public class Fractal {
         return rec_verts;
     }
 
+    /**
+     * Returns an array of Verts on the fractal.
+     *
+     * @param n_levels  levels of recursion to draw the fractal for
+     * @return  an array of Verts on the fractal
+     */
     public Vert[] point_fractal(int n_levels) {
         if (tforms.size() == 0) return null;
         Vert[] verts = {new Vert(tforms.get(0).origin)};
         return recurse_verts(verts, n_levels);
     }
+
+    /**
+     * Draws the fractal to the specified canvas.
+     * An iterative method for drawing the fractal with no large memory requirements.
+     * Currently highly inefficient, so unused.
+     *
+     * @param level  levels of recursion to draw the fractal for
+     * @param canvas  canvas to draw the fractal to
+     */
     public void draw_point_fractal(int level, Canvas canvas) {
         // total number of points to be drawn (n_transforms^level)
         int n_points = 1;
@@ -140,6 +166,12 @@ public class Fractal {
         }
     }
 
+    /**
+     * Returns an array of Verts defining tris in clockwise wind-order
+     *
+     * @param n_levels  levels of recursion to draw the fractal for
+     * @return  An array of Verts defining tris in clockwise wind-order
+     */
     public Vert[] tri_fractal(int n_levels) {
         // TODO: generate triangulization of convex hull around transformation origins
         Vert[] verts = convexHull();

@@ -9,17 +9,14 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.util.concurrent.locks.Lock;
-
-
 /**
- * Created by JeremyIV on 4/2/14.
+ * View which displays fractal drawn in a separate thread.
+ * Uses standard android graphics toolkit.
+ * We'll eventually want to replace this with an OpenGL drawing window.
  */
-// TODO: complete this class
 public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
 
     private SurfaceHolder sh;
-    private Context ctx = null;
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Thread drawThread = new Thread(new FractalDrawer());
     private final MyLock fractalLock = new MyLock();
@@ -27,17 +24,32 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
     // TODO: make sure this is thread-safe to write from main and read in draw
     private Fractal fractal;
 
+    /**
+     * Fractal constructor.
+     *
+     * @param context  context
+     * @param attrs  attrs
+     */
     public FractalView(Context context, AttributeSet attrs) {
         super(context, attrs);
         sh = getHolder();
-        ctx = context;
         sh.addCallback(this);
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.FILL);
     }
 
+    /**
+     * Returns the fractal used to draw in this FractalView
+     *
+     * @return  Fractal
+     */
     public Fractal getFractal() {return fractal;}
 
+    /**
+     * Thread-safely sets fractal and redraws it.
+     *
+     * @param f  new Fractal.
+     */
     public void setFractal(Fractal f) {
         try {
             fractalLock.lock();
@@ -51,6 +63,11 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
         drawThread.start(); // TODO: find out what happens when start() is called before a thread finishes.
     }
 
+    /**
+     * Creates and draws a sierpinski gasket when the FractalView is created.
+     *
+     * @param surfaceHolder surfaceHolder
+     */
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         // Make a nifty leaf fractal
@@ -68,6 +85,11 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
     }
 
+    /**
+     * Thread-safely deletes the fractal and ends the drawThread.
+     *
+     * @param surfaceHolder surfaceHolder
+     */
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         boolean retry = true;
@@ -86,7 +108,11 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-    // function to draw the fractal to the screen instead of onDraw
+    /**
+     * Draws the fractal to the specified Canvas.
+     *
+     * @param canvas  Canvas to draw to
+     */
     private void doDraw(Canvas canvas) {
         // black background
         canvas.drawColor(Color.BLACK);
@@ -113,6 +139,9 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(Color.WHITE);
     }
 
+    /**
+     * Used to draw the fractal in a separate thread.
+     */
     private class FractalDrawer implements Runnable {
         @Override
         public void run() {

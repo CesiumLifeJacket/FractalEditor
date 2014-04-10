@@ -1,7 +1,7 @@
 package com.jeremy.fractal;
 
 /**
- * Created by JeremyIV on 4/5/14.
+ * Lock implementation, used for thread safety.
  */
 public class MyLock {
     private boolean isLocked = false;
