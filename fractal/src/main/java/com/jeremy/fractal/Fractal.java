@@ -142,6 +142,7 @@ public class Fractal {
      * @param canvas  canvas to draw the fractal to
      */
     public void draw_point_fractal(int level, Canvas canvas) {
+        Paint paint = new Paint();
         // total number of points to be drawn (n_transforms^level)
         int n_points = 1;
         for(int i=0; i < level; i++) {
@@ -160,7 +161,6 @@ public class Fractal {
             }
 
             // draw the transformed vertex to the canvas
-            Paint paint = new Paint();
             paint.setColor(t_vert.col);
             canvas.drawPoint(t_vert.pos.x, t_vert.pos.y, paint);
         }

@@ -152,5 +152,4 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
     }
-
 }

@@ -7,4 +7,10 @@
     <com.jeremy.fractal.FractalView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
+    <RelativeLayout
+        android:id="@+id/node_container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        // generate node xml object
+    </RelativeLayout>
 </RelativeLayout>
