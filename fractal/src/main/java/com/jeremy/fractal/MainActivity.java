@@ -10,9 +10,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.RelativeLayout;
 
 public class MainActivity extends Activity {
 
+    private FractalView fractalView;
+    private RelativeLayout node_container;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +26,16 @@ public class MainActivity extends Activity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
+        // get nodes' transformations, define the fractal with them
+        fractalView = (FractalView) findViewById(R.id.main_fractal_view);
+        node_container = (RelativeLayout) findViewById(R.id.node_container);
+
+        Fractal fractal = new Fractal();
+
+        for(int i = 0; i < node_container.getChildCount(); i++) {
+            fractal.tforms.add(((NodeView)node_container.getChildAt(i)).getTransformation());
+        }
+        fractalView.setFractal(fractal);
     }
 
 

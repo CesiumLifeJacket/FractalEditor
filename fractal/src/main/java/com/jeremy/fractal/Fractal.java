@@ -128,7 +128,7 @@ public class Fractal {
      * @return  an array of Verts on the fractal
      */
     public Vert[] point_fractal(int n_levels) {
-        if (tforms.size() == 0) return null;
+        if (tforms.size() == 0) return new Vert[0];
         Vert[] verts = {new Vert(tforms.get(0).origin)};
         return recurse_verts(verts, n_levels);
     }

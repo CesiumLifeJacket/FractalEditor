@@ -72,10 +72,6 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         // Make a nifty leaf fractal
         fractal = new Fractal();
-        Mat2 scale_half = new Mat2(0.5f, 0, 0, 0.5f);
-        fractal.tforms.add(new Transformation(new Vec2(325,  165), scale_half, Color.RED, 0.3f));
-        fractal.tforms.add(new Transformation(new Vec2(50, 700), scale_half, Color.GREEN, 0.3f));
-        fractal.tforms.add(new Transformation(new Vec2(600, 700), scale_half, Color.BLUE, 0.3f));
 
         // draw fractal in new thread
         drawThread.start();
