@@ -1,5 +1,6 @@
 package com.jeremy.fractal;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -9,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 
 
 /**
@@ -105,7 +107,8 @@ public class NodeView extends View {
         Transformation tform = new Transformation();
         tform.color = color;
         tform.color_weight = color_weight;
-        tform.origin = new Vec2(getPaddingLeft()+15, getPaddingTop()+15);
+        ViewGroup.MarginLayoutParams vlp = (ViewGroup.MarginLayoutParams) this.getLayoutParams();
+        tform.origin = new Vec2(vlp.leftMargin+15, vlp.topMargin+15);
         tform.t_matrix = new Mat2();
 
         // calculate the transformation matrix

@@ -18,10 +18,10 @@
             android:layout_width="30px"
             android:layout_height="30px"
             android:layout_marginTop="150px"
-            android:layout_marginLeft="310px"
+            android:layout_marginLeft="340px"
 
             custom:color="#ff0000"
-            custom:colorWeight="0.0"
+            custom:colorWeight="0.3"
             custom:defType="components"
             custom:scaleX="0.5"
             custom:scaleY="0.5"/>
@@ -29,10 +29,10 @@
             android:layout_width="30px"
             android:layout_height="30px"
             android:layout_marginTop="685px"
-            android:layout_marginLeft="35px"
+            android:layout_marginLeft="65px"
 
             custom:color="#00ff00"
-            custom:colorWeight="0.0"
+            custom:colorWeight="0.3"
             custom:defType="components"
             custom:scaleX="0.5"
             custom:scaleY="0.5"/>
@@ -40,10 +40,10 @@
             android:layout_width="30px"
             android:layout_height="30px"
             android:layout_marginTop="685px"
-            android:layout_marginLeft="585px"
+            android:layout_marginLeft="615px"
 
             custom:color="#0000ff"
-            custom:colorWeight="0.0"
+            custom:colorWeight="0.3"
             custom:defType="components"
             custom:scaleX="0.5"
             custom:scaleY="0.5"/>

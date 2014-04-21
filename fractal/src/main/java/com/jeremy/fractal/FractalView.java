@@ -19,10 +19,9 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder sh;
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Thread drawThread = new Thread(new FractalDrawer());
-    private final MyLock fractalLock = new MyLock();
 
     // TODO: make sure this is thread-safe to write from main and read in draw
-    private Fractal fractal;
+    private Fractal fractal = new Fractal();
 
     /**
      * Fractal constructor.
@@ -51,29 +50,43 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
      * @param f  new Fractal.
      */
     public void setFractal(Fractal f) {
-        try {
-            fractalLock.lock();
-            fractal = f;
-            fractalLock.unlock();
-        } catch (InterruptedException e) {
-            fractalLock.unlock();
-            return;
+        // interrupt the drawThread's current process and wait for it to finish
+        drawThread.interrupt();
+        boolean retry = true;
+        while(retry) {
+            try {
+                drawThread.join();
+                retry = false;
+            } catch (Exception e) {
+                Log.v("Error ending thread", e.getMessage());
+            }
         }
-        // redraw fractal
+        // update the fractal
+        fractal = f;
+        // draw the changed fractal
         drawThread.start();
     }
 
     /**
-     * Creates and draws a sierpinski gasket when the FractalView is created.
+     * initializes relevant objects to draw
      *
      * @param surfaceHolder surfaceHolder
      */
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        // Make a nifty leaf fractal
-        fractal = new Fractal();
-
-        // draw fractal in new thread
+        sh = surfaceHolder;
+        // interrupt the drawThread's current process and wait for it to finish
+        drawThread.interrupt();
+        boolean retry = true;
+        while(retry) {
+            try {
+                drawThread.join();
+                retry = false;
+            } catch (Exception e) {
+                Log.v("Error ending thread", e.getMessage());
+            }
+        }
+        // draw the fractal
         drawThread.start();
     }
 
@@ -113,23 +126,36 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
         // black background
         canvas.drawColor(Color.BLACK);
 
-        // copy the fractal so it's not changed mid-draw
-        Fractal fractal_copy;
-        try {
-            fractalLock.lock();
-            fractal_copy = new Fractal(fractal);
-            fractalLock.unlock();
-        } catch (InterruptedException e) {
-            fractalLock.unlock();
-            return;
+//        // get the verts compising the fractal
+//        Vert[] verts = fractal_copy.point_fractal(7);
+//
+//        // draw them to the canvas
+//        for (int i=0; i < verts.length; i++) {
+//            paint.setColor(verts[i].col);
+//            canvas.drawPoint(verts[i].pos.x, verts[i].pos.y, paint);
+//        }
+        // draw the fractal to the canvas
+        // total number of points to be drawn (n_transforms^level)
+        int level = 7;
+        int n_points = 1;
+        for(int i=0; i < level; i++) {
+            n_points *= fractal.tforms.size();
         }
-        // get the verts compising the fractal
-        Vert[] verts = fractal_copy.point_fractal(7);
+        // for each point to be drawn
+        for (int i = 0; i < n_points; i++) {
+            int r = i;
+            Vert t_vert = new Vert(fractal.tforms.get(0).origin);
 
-        // draw them to the canvas
-        for (int i=0; i < verts.length; i++) {
-            paint.setColor(verts[i].col);
-            canvas.drawPoint(verts[i].pos.x, verts[i].pos.y, paint);
+            // transform the vertex level times
+            for (int j = 0; j < level; j++) {
+                Transformation tform = fractal.tforms.get((r%(fractal.tforms.size())) );
+                t_vert = tform.transform(t_vert);
+                r /= fractal.tforms.size();
+            }
+
+            // draw the transformed vertex to the canvas
+            paint.setColor(t_vert.col);
+            canvas.drawPoint(t_vert.pos.x, t_vert.pos.y, paint);
         }
 
         paint.setColor(Color.WHITE);
@@ -143,7 +169,35 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
         public void run() {
             Canvas canvas = sh.lockCanvas();
             if (canvas != null) {
-                doDraw(canvas);
+                // black background
+                canvas.drawColor(Color.BLACK);
+
+                // draw the fractal to the canvas
+                // total number of points to be drawn (n_transforms^level)
+                int level = 7;
+                int n_points = 1;
+                for(int i=0; i < level; i++) {
+                    n_points *= fractal.tforms.size();
+                }
+                // for each point to be drawn
+                for (int i = 0; i < n_points && !Thread.interrupted(); i++) {
+                    int r = i;
+                    Vert t_vert = new Vert(fractal.tforms.get(0).origin);
+
+                    // transform the vertex level times
+                    for (int j = 0; j < level; j++) {
+                        Transformation tform = fractal.tforms.get((r%(fractal.tforms.size())) );
+                        t_vert = tform.transform(t_vert);
+                        r /= fractal.tforms.size();
+                    }
+
+                    // draw the transformed vertex to the canvas
+                    paint.setColor(t_vert.col);
+                    canvas.drawPoint(t_vert.pos.x, t_vert.pos.y, paint);
+                }
+
+                paint.setColor(Color.WHITE);
+
                 sh.unlockCanvasAndPost(canvas);
             }
         }
