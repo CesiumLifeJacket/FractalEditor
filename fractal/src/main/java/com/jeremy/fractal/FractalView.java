@@ -17,8 +17,8 @@ import android.view.SurfaceView;
 public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
 
     private SurfaceHolder sh;
-    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Thread drawThread = new Thread(new FractalDrawer());
+    private final Paint paint = new Paint(); // had anti-alias flag
+    private Thread drawThread;
 
     // TODO: make sure this is thread-safe to write from main and read in draw
     private Fractal fractal = new Fractal();
@@ -35,6 +35,7 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
         sh.addCallback(this);
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.FILL);
+        drawThread = new Thread(new FractalDrawer());
     }
 
     /**
@@ -64,6 +65,7 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
         // update the fractal
         fractal = f;
         // draw the changed fractal
+        drawThread = new Thread(new FractalDrawer());
         drawThread.start();
     }
 
@@ -87,6 +89,7 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
         // draw the fractal
+        drawThread = new Thread(new FractalDrawer());
         drawThread.start();
     }
 

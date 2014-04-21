@@ -34,6 +34,9 @@ public class NodeView extends View {
     // drawing attributes
     private Paint paint;
 
+    // editor-related attributes
+    boolean selected;
+
     public NodeView(Context context) {
         super(context);
         init(null, 0);
@@ -104,12 +107,13 @@ public class NodeView extends View {
 
     // returns the transformation associated with this node
     public Transformation getTransformation() {
+
         Transformation tform = new Transformation();
         tform.color = color;
         tform.color_weight = color_weight;
         ViewGroup.MarginLayoutParams vlp = (ViewGroup.MarginLayoutParams) this.getLayoutParams();
+        // TODO: set point in the middle of node, not just 15 pixels left and down
         tform.origin = new Vec2(vlp.leftMargin+15, vlp.topMargin+15);
-        tform.t_matrix = new Mat2();
 
         // calculate the transformation matrix
         if (use_matrix) {
@@ -117,8 +121,9 @@ public class NodeView extends View {
         }
         else {
             Mat2 scale_mat = new Mat2(scale_X, 0, 0, scale_Y);
-            float cos = (float)Math.cos(rotate);
-            float sin = (float)Math.sin(rotate);
+            float theta = rotate*(float)Math.PI/180.0f; // convert degrees to radians
+            float cos = (float)Math.cos(theta);
+            float sin = (float)Math.sin(theta);
             Mat2 rotate_mat = new Mat2(cos, -sin, sin, cos);
             Mat2 shear_mat = new Mat2(1, shearX, shearY, 1);
             tform.t_matrix = rotate_mat.times(scale_mat).times(shear_mat);
