@@ -5,51 +5,64 @@
     android:layout_height="match_parent"
     tools:context="com.jeremy.fractal.MainActivity$PlaceholderFragment">
 
+    <TableLayout
+        android:id="@+id/FractalMenu"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        </TableLayout>
+
+    <TableLayout
+        android:id="@+id/NodeMenu"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:shrinkColumns="*"
+        android:stretchColumns="*"
+        android:background="#ffeeeeee">
+    <TableRow android:gravity="center_horizontal">
+        // X
+        <TextView android:text="X"   android:gravity="center_horizontal"/>
+        // Y
+        <TextView android:text="Y"   android:gravity="center_horizontal"/>
+        // rot
+        <TextView android:text="rot" android:gravity="center_horizontal"/>
+        // scale x
+        <TextView android:text="scX" android:gravity="center_horizontal"/>
+        // scale y
+        <TextView android:text="scY" android:gravity="center_horizontal"/>
+        // shear x
+        <TextView android:text="shX" android:gravity="center_horizontal"/>
+        // shear y
+        <TextView android:text="shY" android:gravity="center_horizontal"/>
+        </TableRow>
+    <TableRow android:gravity="center_horizontal">
+        // X
+        <EditText android:id="@+id/X_field" android:inputType="number"/>
+        // Y
+        <EditText android:id="@+id/Y_field" android:inputType="number"/>
+        // rot
+        <EditText android:id="@+id/rot_field" android:inputType="number"/>
+        // scale X
+        <EditText android:id="@+id/scX_field" android:inputType="number"/>
+        // scale Y
+        <EditText android:id="@+id/scY_field" android:inputType="number"/>
+        // shear X
+        <EditText android:id="@+id/shX_field" android:inputType="number"/>
+        //shear Y
+        <EditText android:id="@+id/shY_field" android:inputType="number"/>
+        </TableRow>
+    </TableLayout>
+
     <com.jeremy.fractal.FractalView
         android:id="@+id/main_fractal_view"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
-    <RelativeLayout
+        android:layout_height="fill_parent"
+        android:layout_below="@id/NodeMenu"/>
+    <com.jeremy.fractal.NodesView
         android:id="@+id/node_container"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:layout_below="@id/NodeMenu">
         // generate node xml object
-        <com.jeremy.fractal.NodeView
-            android:layout_width="30px"
-            android:layout_height="30px"
-            android:layout_marginTop="300px"
-            android:layout_marginLeft="340px"
-
-            custom:color="#ff0000"
-            custom:colorWeight="0.3"
-            custom:defType="components"
-            custom:scaleX="0.5"
-            custom:scaleY="0.5"
-            />
-        <com.jeremy.fractal.NodeView
-            android:layout_width="30px"
-            android:layout_height="30px"
-            android:layout_marginTop="550px"
-            android:layout_marginLeft="185px"
-
-            custom:color="#00ff00"
-            custom:colorWeight="0.3"
-            custom:defType="components"
-            custom:scaleX="0.5"
-            custom:scaleY="0.5"
-            />
-        <com.jeremy.fractal.NodeView
-            android:layout_width="30px"
-            android:layout_height="30px"
-            android:layout_marginTop="550px"
-            android:layout_marginLeft="485px"
-
-            custom:color="#0000ff"
-            custom:colorWeight="0.3"
-            custom:defType="components"
-
-            custom:scaleX="0.5"
-            custom:scaleY="0.5"
-            />
-    </RelativeLayout>
+    </com.jeremy.fractal.NodesView>
 </RelativeLayout>

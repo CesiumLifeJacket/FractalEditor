@@ -12,7 +12,7 @@ public class Vert{
     /**
      * Default constructor.
      *
-     * Sets pos to origin.
+     * Sets pos to pos.
      * Sets color to white.
      */
     public Vert() {

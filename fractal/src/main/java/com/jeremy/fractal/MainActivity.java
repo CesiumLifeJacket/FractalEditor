@@ -3,6 +3,7 @@ package com.jeremy.fractal;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 import android.widget.RelativeLayout;
+
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
@@ -53,7 +56,7 @@ public class MainActivity extends Activity {
     public static class PlaceholderFragment extends Fragment {
 
         private FractalView fractalView;
-        private RelativeLayout node_container;
+        private NodesView nodesView;
 
         public PlaceholderFragment() {
         }
@@ -69,14 +72,20 @@ public class MainActivity extends Activity {
         private void initFractal(View v) {
             // get nodes' transformations, define the fractal with them
             fractalView = (FractalView) v.findViewById(R.id.main_fractal_view);
-            node_container = (RelativeLayout) v.findViewById(R.id.node_container);
+            nodesView = (NodesView) v.findViewById(R.id.node_container);
+            nodesView.fractalView = fractalView;
 
-            Fractal fractal = new Fractal();
+            ArrayList<Node> nodes = new ArrayList<Node>();
+            nodes.add(new Node(Color.RED  , .3f, 50,  50, .5f, .5f, 0f, 0f, 0f));
+            nodes.add(new Node(Color.GREEN, .3f, 400, 50, .5f, .5f, 0f, 0f, 0f));
+            nodes.add(new Node(Color.BLUE , .3f, 50, 400, .5f, .5f, 0f, 0f, 0f));
+            nodesView.setNodes(nodes);
 
-            for(int i = 0; i < node_container.getChildCount(); i++) {
-                fractal.tforms.add(((NodeView)node_container.getChildAt(i)).getTransformation());
-            }
-            fractalView.setFractal(fractal);
+            fractalView.setFractal(nodesView.getFractal());
+        }
+
+        private void updateMenu() {
+            // update the menu I guess
         }
     }
 

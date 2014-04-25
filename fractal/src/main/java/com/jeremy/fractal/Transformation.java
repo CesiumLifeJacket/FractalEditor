@@ -4,7 +4,7 @@ import android.graphics.Color;
 
 public class Transformation {
     /** Origin of the transformation.
-     * Matrix will transform verts with this position as the origin
+     * Matrix will transform verts with this position as the pos
      */
     public Vec2 origin;
     /** Transformation matrix.
@@ -32,14 +32,14 @@ public class Transformation {
     }
 
     /**
-     * Transformation constructor with specified origin.
+     * Transformation constructor with specified pos.
      * <p>
-     * Transformation constructor with specified origin.
+     * Transformation constructor with specified pos.
      * Default transformation matrix is the identity matrix,
      * default color is white,
      * default color weight is zero.
      *
-     * @param origin  transformation origin
+     * @param origin  transformation pos
      */
     public Transformation(Vec2 origin) {
         this.origin = origin;
@@ -49,13 +49,13 @@ public class Transformation {
     }
 
     /**
-     * Transformation constructor with specified origin and transformation matrix.
+     * Transformation constructor with specified pos and transformation matrix.
      *
-     * Transformation constructor with specified origin and transformation matrix.
+     * Transformation constructor with specified pos and transformation matrix.
      * Default color is white,
      * default color weight is zero.
      *
-     * @param origin    transformation origin
+     * @param origin    transformation pos
      * @param t_matrix  transformation matrix
      */
     public Transformation(Vec2 origin, Mat2 t_matrix) {
@@ -66,11 +66,11 @@ public class Transformation {
     }
 
     /**
-     * Transformation constructor with specified origin, transformation matrix, color, and color weight.
+     * Transformation constructor with specified pos, transformation matrix, color, and color weight.
      * <p>
-     * Transformation constructor with specified origin, transformation matrix, color, and color weight.
+     * Transformation constructor with specified pos, transformation matrix, color, and color weight.
      *
-     * @param origin        transformation origin
+     * @param origin        transformation pos
      * @param t_matrix      transformation matrix
      * @param color         transformation color
      * @param color_weight  transformation color weight

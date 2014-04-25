@@ -20,7 +20,6 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
     private final Paint paint = new Paint(); // had anti-alias flag
     private Thread drawThread;
 
-    // TODO: make sure this is thread-safe to write from main and read in draw
     private Fractal fractal = new Fractal();
 
     /**
@@ -200,7 +199,7 @@ public class FractalView extends SurfaceView implements SurfaceHolder.Callback {
                 }
 
                 paint.setColor(Color.WHITE);
-
+                
                 sh.unlockCanvasAndPost(canvas);
             }
         }
