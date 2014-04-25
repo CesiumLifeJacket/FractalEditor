@@ -14,8 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by JeremyIV on 4/24/2014.
+ * Created by JeremyIV on   4/24/2014.
  */
+
 public class NodesView extends View {
     private List<Node> nodes = new ArrayList<Node>();
     private int selectedIndex = -1;
