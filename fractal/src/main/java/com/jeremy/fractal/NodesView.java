@@ -60,7 +60,6 @@ public class NodesView extends View {
     private void init() {
     }
 
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
